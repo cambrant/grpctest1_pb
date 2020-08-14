@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package main;
+package grpctest1;
 
 option go_package = "github.com/cambrant/grpctest1_pb";
 
