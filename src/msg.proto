@@ -7,4 +7,9 @@ option go_package = "github.com/cambrant/grpctest1_pb";
 message Msg {
     string text = 1;
     int32 number = 2;
+    string comment = 3;
+};
+
+service Message {
+    rpc SendMessage (Msg) returns (Msg) {}
 };

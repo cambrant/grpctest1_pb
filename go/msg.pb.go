@@ -7,7 +7,11 @@
 package grpctest1_pb
 
 import (
+	context "context"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -30,8 +34,9 @@ type Msg struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Text   string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	Number int32  `protobuf:"varint,2,opt,name=number,proto3" json:"number,omitempty"`
+	Text    string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	Number  int32  `protobuf:"varint,2,opt,name=number,proto3" json:"number,omitempty"`
+	Comment string `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
 }
 
 func (x *Msg) Reset() {
@@ -80,17 +85,29 @@ func (x *Msg) GetNumber() int32 {
 	return 0
 }
 
+func (x *Msg) GetComment() string {
+	if x != nil {
+		return x.Comment
+	}
+	return ""
+}
+
 var File_msg_proto protoreflect.FileDescriptor
 
 var file_msg_proto_rawDesc = []byte{
 	0x0a, 0x09, 0x6d, 0x73, 0x67, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x67, 0x72, 0x70,
-	0x63, 0x74, 0x65, 0x73, 0x74, 0x31, 0x22, 0x31, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x12, 0x0a,
+	0x63, 0x74, 0x65, 0x73, 0x74, 0x31, 0x22, 0x4b, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x12, 0x0a,
 	0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78,
 	0x74, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x05, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x42, 0x22, 0x5a, 0x20, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x61, 0x6d, 0x62, 0x72, 0x61, 0x6e, 0x74,
-	0x2f, 0x67, 0x72, 0x70, 0x63, 0x74, 0x65, 0x73, 0x74, 0x31, 0x5f, 0x70, 0x62, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x05, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d,
+	0x65, 0x6e, 0x74, 0x32, 0x3a, 0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x2f,
+	0x0a, 0x0b, 0x53, 0x65, 0x6e, 0x64, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x0e, 0x2e,
+	0x67, 0x72, 0x70, 0x63, 0x74, 0x65, 0x73, 0x74, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x1a, 0x0e, 0x2e,
+	0x67, 0x72, 0x70, 0x63, 0x74, 0x65, 0x73, 0x74, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x22, 0x00, 0x42,
+	0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x61,
+	0x6d, 0x62, 0x72, 0x61, 0x6e, 0x74, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x74, 0x65, 0x73, 0x74, 0x31,
+	0x5f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -110,8 +127,10 @@ var file_msg_proto_goTypes = []interface{}{
 	(*Msg)(nil), // 0: grpctest1.Msg
 }
 var file_msg_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
+	0, // 0: grpctest1.Message.SendMessage:input_type -> grpctest1.Msg
+	0, // 1: grpctest1.Message.SendMessage:output_type -> grpctest1.Msg
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -144,7 +163,7 @@ func file_msg_proto_init() {
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_msg_proto_goTypes,
 		DependencyIndexes: file_msg_proto_depIdxs,
@@ -154,4 +173,84 @@ func file_msg_proto_init() {
 	file_msg_proto_rawDesc = nil
 	file_msg_proto_goTypes = nil
 	file_msg_proto_depIdxs = nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// MessageClient is the client API for Message service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type MessageClient interface {
+	SendMessage(ctx context.Context, in *Msg, opts ...grpc.CallOption) (*Msg, error)
+}
+
+type messageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMessageClient(cc grpc.ClientConnInterface) MessageClient {
+	return &messageClient{cc}
+}
+
+func (c *messageClient) SendMessage(ctx context.Context, in *Msg, opts ...grpc.CallOption) (*Msg, error) {
+	out := new(Msg)
+	err := c.cc.Invoke(ctx, "/grpctest1.Message/SendMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MessageServer is the server API for Message service.
+type MessageServer interface {
+	SendMessage(context.Context, *Msg) (*Msg, error)
+}
+
+// UnimplementedMessageServer can be embedded to have forward compatible implementations.
+type UnimplementedMessageServer struct {
+}
+
+func (*UnimplementedMessageServer) SendMessage(context.Context, *Msg) (*Msg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+
+func RegisterMessageServer(s *grpc.Server, srv MessageServer) {
+	s.RegisterService(&_Message_serviceDesc, srv)
+}
+
+func _Message_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Msg)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpctest1.Message/SendMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServer).SendMessage(ctx, req.(*Msg))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Message_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "grpctest1.Message",
+	HandlerType: (*MessageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SendMessage",
+			Handler:    _Message_SendMessage_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "msg.proto",
 }
